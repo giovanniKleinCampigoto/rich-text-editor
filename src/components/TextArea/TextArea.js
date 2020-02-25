@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 
-import styled from '@emotion/styled';
+import { Area } from './TextAreaStyles';
+import { debounce } from '../../utils';
 
-const Area = styled.textarea`
-  min-height: 350px;
-  min-widht: 350px;
-`;
+const TextArea = ({ theme, bold }) => {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState('');
 
-const TextArea = ({ theme }) => {
-  return <Area theme={theme} />;
+  function mantainFoucsIfValue(e) {
+    const { value } = e.target;
+
+    if (!value) {
+      setFocused(false);
+    }
+  }
+
+  function writeHtml(value) {
+    console.log(value);
+    // const node = React.createElement('p', {}, value);
+    // console.log(node);
+    // console.log(document.getElementById('editor'));
+    // ReactDOM.render(node, document.getElementById('editor'));
+  }
+
+  return (
+    <Area
+      id="editor"
+      contentEditable={true}
+      theme={theme}
+      bold={bold}
+      focused={focused}
+      onChange={e => debounce(writeHtml, e.target.value, 300)}
+      onFocus={() => setFocused(true)}
+      onBlur={e => mantainFoucsIfValue(e)}
+    />
+  );
 };
 
 export default TextArea;
