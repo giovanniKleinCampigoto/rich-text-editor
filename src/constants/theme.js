@@ -1,5 +1,9 @@
 export const theme = {
-  colors: {
-    headings: '#252625'
+  colors: {},
+  text: {
+    headings: {
+      color: '#252625',
+      size: '26px'
+    }
   }
 };
