@@ -1,3 +1,4 @@
 import TextArea from './TextArea';
+import Menu from './Menu';
 
-export { TextArea };
+export { TextArea, Menu };

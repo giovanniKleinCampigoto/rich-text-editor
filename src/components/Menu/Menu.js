@@ -1,11 +1,9 @@
 import React from 'react';
 
 const Menu = ({ onBold }) => {
-  function setBold() {}
-
   return (
     <ul>
-      <li onClick={setBold}>bold</li>
+      <button onClick={onBold}>bold</button>
     </ul>
   );
 };
