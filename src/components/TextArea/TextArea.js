@@ -1,40 +1,59 @@
 import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 
 import { Area } from './TextAreaStyles';
 import { debounce } from '../../utils';
 
-const paragraphSyle = {
-  margin: '0'
-};
+const Paragraph = styled.p`
+  margin: 0;
+`;
 
 const TextArea = ({ theme, bold }) => {
   const inputEl = useRef(null);
   const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState('');
 
   function mantainFoucsIfValue(e) {
-    const { value } = e.target;
+    const { innerText } = e.target;
 
-    if (!value) {
+    if (!innerText) {
       setFocused(false);
     }
   }
 
-  function writeHtml(innerText) {
+  function writeHtml(innerText, keyCode) {
     const editor = document.getElementById('editor');
 
     if (innerText.trim().length === 0) {
-      console.log('here');
+      console.log(innerText);
       ReactDOM.unmountComponentAtNode(editor);
       return;
     }
 
-    const node = React.createElement('p', { style: paragraphSyle }, innerText);
-    ReactDOM.render(node, editor);
+    if (keyCode === 13) {
+      console.log('enter was pressed');
+      renderParagraph(innerText, editor);
+    }
   }
 
-  function selection() {}
+  function renderParagraph(innerText, editor) {
+    const allTextElements = document.querySelectorAll('.text-wrapper');
+
+    if (!allTextElements.length) {
+      ReactDOM.render(
+        <Paragraph className="text-wrapper">{innerText}</Paragraph>,
+        editor,
+        createElementReference
+      );
+    }
+  }
+
+  function createElementReference() {}
+
+  function changeTextFormatting() {
+    //   const selection = window.getSelection().toString();
+    //   const editor = document.getElementById('editor');
+  }
 
   return (
     <Area
@@ -44,10 +63,10 @@ const TextArea = ({ theme, bold }) => {
       theme={theme}
       bold={bold}
       focused={focused}
-      // onSelect={e => console.log(window.getSelection().toString())}
+      onSelect={e => changeTextFormatting()}
       onFocus={() => setFocused(true)}
       onBlur={e => mantainFoucsIfValue(e)}
-      onInput={e => debounce(writeHtml, e.target.innerText, 300)}
+      onKeyUp={e => writeHtml(e.target.innerText, e.keyCode)}
     />
   );
 };
