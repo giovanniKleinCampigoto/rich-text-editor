@@ -25,18 +25,16 @@ const TextArea = ({ theme, bold }) => {
     const editor = document.getElementById('editor');
 
     if (innerText.trim().length === 0) {
-      console.log(innerText);
       ReactDOM.unmountComponentAtNode(editor);
       return;
     }
 
     if (keyCode === 13) {
-      console.log('enter was pressed');
-      renderParagraph(innerText, editor);
+      renderNewParagraphIfEnterWasPressed(innerText, editor);
     }
   }
 
-  function renderParagraph(innerText, editor) {
+  function renderNewParagraphIfEnterWasPressed(innerText, editor) {
     const allTextElements = document.querySelectorAll('.text-wrapper');
 
     if (!allTextElements.length) {
