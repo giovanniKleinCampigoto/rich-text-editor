@@ -30,38 +30,31 @@ const TextArea = ({ theme, bold }) => {
     }
 
     if (keyCode === 13) {
-      renderNewParagraphIfEnterWasPressed(innerText, editor);
+      const splittedText = innerText.split('\n').filter(x => x !== '');
+      const elements = splittedText.map((text, index) => (
+        <Paragraph
+          key={`text-${index}`}
+          id={`text-${index}`}
+          onClick={() => console.log(`text-${index} was clicked`)}
+        >
+          {text}
+        </Paragraph>
+      ));
+
+      console.log(elements);
+
+      ReactDOM.render(elements, editor);
     }
-  }
-
-  function renderNewParagraphIfEnterWasPressed(innerText, editor) {
-    const allTextElements = document.querySelectorAll('.text-wrapper');
-
-    if (!allTextElements.length) {
-      ReactDOM.render(
-        <Paragraph className="text-wrapper">{innerText}</Paragraph>,
-        editor,
-        createElementReference
-      );
-    }
-  }
-
-  function createElementReference() {}
-
-  function changeTextFormatting() {
-    //   const selection = window.getSelection().toString();
-    //   const editor = document.getElementById('editor');
   }
 
   return (
     <Area
       ref={inputEl}
       id="editor"
-      contentEditable={true}
+      contentEditable
       theme={theme}
       bold={bold}
       focused={focused}
-      onSelect={e => changeTextFormatting()}
       onFocus={() => setFocused(true)}
       onBlur={e => mantainFoucsIfValue(e)}
       onKeyUp={e => writeHtml(e.target.innerText, e.keyCode)}
