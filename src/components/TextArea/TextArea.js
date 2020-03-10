@@ -12,6 +12,7 @@ const Paragraph = styled.p`
 const TextArea = ({ theme, bold }) => {
   const inputEl = useRef(null);
   const [focused, setFocused] = useState(false);
+  const [elements, setElements] = useState([]);
 
   function mantainFoucsIfValue(e) {
     const { innerText } = e.target;
@@ -24,27 +25,13 @@ const TextArea = ({ theme, bold }) => {
   function writeHtml(innerText, keyCode) {
     const editor = document.getElementById('editor');
 
-    if (innerText.trim().length === 0) {
-      ReactDOM.unmountComponentAtNode(editor);
-      return;
-    }
-
     if (keyCode === 13) {
-      const splittedText = innerText.split('\n').filter(x => x !== '');
-      const elements = splittedText.map((text, index) => (
-        <Paragraph
-          key={`text-${index}`}
-          id={`text-${index}`}
-          onClick={() => console.log(`text-${index} was clicked`)}
-        >
-          {text}
-        </Paragraph>
-      ));
-
-      console.log(elements);
-
-      ReactDOM.render(elements, editor);
+      const splited = innerText.split('\n').filter(x => x !== '');
     }
+  }
+
+  function beforeInput(e) {
+    console.log(e.data === '\n');
   }
 
   return (
@@ -55,6 +42,7 @@ const TextArea = ({ theme, bold }) => {
       theme={theme}
       bold={bold}
       focused={focused}
+      onBeforeInput={e => beforeInput(e)}
       onFocus={() => setFocused(true)}
       onBlur={e => mantainFoucsIfValue(e)}
       onKeyUp={e => writeHtml(e.target.innerText, e.keyCode)}
