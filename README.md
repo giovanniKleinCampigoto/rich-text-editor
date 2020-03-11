@@ -1,3 +1,1 @@
-# Current Status: on hold.
-
-## Rich text editor
+## Rich text editor (Medium based)

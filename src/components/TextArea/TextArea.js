@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 
@@ -9,29 +9,64 @@ const Paragraph = styled.p`
   margin: 0;
 `;
 
+const Title = styled.h3`
+  font-size: 26px;
+`;
+
 const TextArea = ({ theme, bold }) => {
   const inputEl = useRef(null);
-  const [focused, setFocused] = useState(false);
-  const [elements, setElements] = useState([]);
+  const [paragraphs, setParagraphs] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [currentText, setCurrentText] = useState('');
 
-  function mantainFoucsIfValue(e) {
-    const { innerText } = e.target;
+  useEffect(() => {
+    createInitialElements();
+  });
 
-    if (!innerText) {
-      setFocused(false);
+  useEffect(() => {
+    if (currentText.length) {
+      updateTitle();
     }
-  }
+  }, [currentText]);
 
-  function writeHtml(innerText, keyCode) {
+  function createInitialElements() {
     const editor = document.getElementById('editor');
 
-    if (keyCode === 13) {
-      const splited = innerText.split('\n').filter(x => x !== '');
+    const title = <Title id="title" />;
+    ReactDOM.render(title, editor);
+  }
+
+  function beforeInputHandler(e) {
+    const character = e.data;
+
+    e.preventDefault();
+    setCurrentText(prevState => {
+      return prevState + character;
+    });
+  }
+
+  function updateTitle() {
+    const title = document.querySelector('#title');
+    ReactDOM.render(currentText, title);
+    caretHanlder();
+  }
+
+  function onKeyDown(e) {
+    if (e.key === 'Backspace') {
+      console.log(window.getSelection());
     }
   }
 
-  function beforeInput(e) {
-    console.log(e.data === '\n');
+  function caretHanlder() {
+    const editor = document.getElementById('editor');
+
+    let range, selection;
+    range = document.createRange();
+    range.selectNodeContents(editor);
+    range.collapse(false);
+    selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   return (
@@ -41,11 +76,8 @@ const TextArea = ({ theme, bold }) => {
       contentEditable
       theme={theme}
       bold={bold}
-      focused={focused}
-      onBeforeInput={e => beforeInput(e)}
-      onFocus={() => setFocused(true)}
-      onBlur={e => mantainFoucsIfValue(e)}
-      onKeyUp={e => writeHtml(e.target.innerText, e.keyCode)}
+      onKeyDown={e => onKeyDown(e)}
+      onBeforeInput={e => beforeInputHandler(e)}
     />
   );
 };
